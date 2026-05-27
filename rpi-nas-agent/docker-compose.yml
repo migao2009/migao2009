@@ -1,0 +1,85 @@
+# 树莓派 NAS 管家 - 服务编排
+# 注意: Ollama 建议直接在宿主机安装（性能更好），见 install.sh
+# 如果要用 Docker 跑 Ollama，取消下面 ollama 服务的注释
+version: "3.8"
+
+services:
+
+  # === AI Agent（核心服务）===
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nas-agent
+    restart: unless-stopped
+    ports:
+      - "8765:8765"  # HTTP API
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./config:/app/config:ro
+      - /mnt/nas:/mnt/nas:shared
+      - /etc/localtime:/etc/localtime:ro
+    devices:
+      - /dev/snd:/dev/snd
+    environment:
+      - MODE=api
+      - PYTHONUNBUFFERED=1
+    group_add:
+      - audio
+    command: ["python", "-m", "agent.main", "api", "--port", "8765"]
+
+  # === 下载管理器 ===
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "6881:6881"
+      - "6881:6881/udp"
+    volumes:
+      - ./services/qbittorrent/config:/config
+      - /mnt/nas/下载:/downloads
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Shanghai
+      - WEBUI_PORT=8080
+
+  # === 通用下载器 ===
+  aria2:
+    image: p3terx/aria2-pro
+    container_name: aria2
+    restart: unless-stopped
+    ports:
+      - "6800:6800"
+      - "6888:6888"
+      - "6888:6888/udp"
+    volumes:
+      - ./services/aria2/config:/config
+      - /mnt/nas/下载:/downloads
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - RPC_SECRET=your-aria2-secret
+      - TZ=Asia/Shanghai
+
+  # === Ollama（可选 - Docker 方式运行）===
+  # Ollama 在 Docker 中跑 ARM64 性能有损失，
+  # 推荐直接在宿主机安装（curl -fsSL https://ollama.com/install.sh | sh）
+  # 下面的配置仅供 Docker 方案参考:
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   container_name: ollama
+  #   restart: unless-stopped
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ./services/ollama:/root/.ollama
+  #   environment:
+  #     - OLLAMA_KEEP_ALIVE=24h
+  #     - OLLAMA_NUM_PARALLEL=1
+
+networks:
+  default:
+    name: nas-agent-network

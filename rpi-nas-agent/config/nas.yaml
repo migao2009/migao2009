@@ -1,0 +1,20 @@
+# 黑群晖 NAS 连接配置
+# 修改为你自己的 NAS 信息
+nas:
+  host: 192.168.1.100       # NAS IP 地址
+  username: admin            # NAS 登录用户名
+  password: ""               # NAS 登录密码
+  smb:
+    share_name: media        # SMB 共享名
+    mount_point: /mnt/nas    # 本地挂载点
+    options: "vers=3.0,uid=1000,gid=1000,iocharset=utf8"
+
+  # 共享目录映射（下载完成后自动归类到此目录）
+  shares:
+    movies: /mnt/nas/电影
+    tvshows: /mnt/nas/电视剧
+    music: /mnt/nas/音乐
+    downloads: /mnt/nas/下载
+    documents: /mnt/nas/文档
+    photos: /mnt/nas/照片
+    software: /mnt/nas/软件

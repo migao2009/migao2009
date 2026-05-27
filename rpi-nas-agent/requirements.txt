@@ -1,0 +1,25 @@
+# Agent 核心
+aiohttp>=3.9.0
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# 语音
+faster-whisper>=1.0.0
+edge-tts>=6.0.0
+sounddevice>=0.4.6
+openwakeword>=0.4.0
+webrtcvad>=2.0.10
+numpy>=1.24.0
+
+# 工具依赖
+aiohttp[speedups]>=3.9.0
+
+# 消息通道 - 飞书 Bot
+# lark-oapi>=2.0.0  # 可选，用于更完善的飞书 API 支持
+
+# 消息通道 - 企业微信
+# requests>=2.31.0  # wecom 通道使用 aiohttp，不需要额外依赖
+
+# 开发工具
+pytest>=7.0.0
+pytest-asyncio>=0.21.0

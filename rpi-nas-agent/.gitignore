@@ -1,0 +1,29 @@
+# 环境变量（含密钥）
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+
+# 配置文件本地修改（不含 .example）
+config/*.local.yaml
+
+# NAS 挂载点
+/mnt/nas/
+
+# 服务数据目录
+services/qbittorrent/config/*
+services/aria2/*
+services/ollama/*
+!services/*/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+
+# 系统
+.DS_Store
+Thumbs.db

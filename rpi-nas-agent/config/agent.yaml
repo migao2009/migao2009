@@ -1,0 +1,36 @@
+# AI Agent 配置
+# 默认使用 Ollama 本地运行，不依赖任何外部 API
+llm:
+  provider: ollama          # ollama（本地） | deepseek | openai
+  api_key: ""               # Ollama 不需要 API Key
+  base_url: http://localhost:11434
+  model: qwen2.5:7b         # 推荐: qwen2.5:7b（中文好/支持工具调用）
+  temperature: 0.7
+  max_tokens: 4096
+  timeout: 120              # 本地模型慢，超时设长一点
+
+# 唤醒词配置
+wake_word:
+  enabled: true
+  model: hey_raspberry
+  sensitivity: 0.5
+  timeout: 5
+
+# TTS 配置
+tts:
+  provider: edge            # edge | piper | espeak
+  voice: zh-CN-XiaoxiaoNeural
+  speed: 1.0
+
+# STT 配置
+stt:
+  provider: whisper
+  model: tiny               # tiny | base | small
+  device: cpu
+  language: zh
+
+# 音频设备
+audio:
+  input_device: ""
+  output_device: ""
+  sample_rate: 16000

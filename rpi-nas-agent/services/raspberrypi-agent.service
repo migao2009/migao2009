@@ -1,0 +1,26 @@
+[Unit]
+Description=树莓派 NAS 智能管家
+After=network-online.target remote-fs.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# 将 User 改为你树莓派的登录用户名
+User=pi
+# 将 WorkingDirectory 改为实际路径
+WorkingDirectory=/home/pi/rpi-nas-agent
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/pi/rpi-nas-agent/venv/bin/python -m agent.main cli
+Restart=on-failure
+RestartSec=5
+
+# 确保有权限访问 USB 音频设备
+DeviceAllow=/dev/snd
+SupplementaryGroups=audio
+
+# 日志配置
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
